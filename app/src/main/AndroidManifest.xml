@@ -4,20 +4,21 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:label="SPADA UNTIRTA"
+        android:allowBackup="false"
+        android:icon="@mipmap/ic_launcher"
+        android:label="SPADA Untirta (Unofficial)"
         android:usesCleartextTraffic="false"
         android:hardwareAccelerated="true"
         android:theme="@android:style/Theme.Material.Light.NoActionBar">
 
         <activity
-            android:name="id.ac.untirta.siakangspada.MainActivity"
-            android:exported="true">
-
+            android:name=".MainActivity"
+            android:exported="true"
+            android:configChanges="orientation|screenSize|keyboardHidden|screenLayout|smallestScreenSize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-
         </activity>
 
     </application>
