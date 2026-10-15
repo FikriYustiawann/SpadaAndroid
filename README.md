@@ -28,7 +28,3 @@ Unduh versi terbaru lewat tombol di atas, atau langsung dari halaman rilis: [**K
 - Koneksi internet diperlukan untuk menggunakan aplikasi.
 - Website SPADA UNTIRTA harus tersedia agar dapat diakses melalui aplikasi.
 - Beberapa fitur website (misalnya unggah berkas, kamera, atau pop-up) mungkin memerlukan penyesuaian agar berfungsi dengan baik di dalam aplikasi.
-
-## Tautan
-
-- Website SPADA UNTIRTA: <https://spada.untirta.ac.id/?redirect=0>
