@@ -4,17 +4,15 @@ Aplikasi Android berbasis WebView untuk memudahkan akses website "SPADA UNTIRTA"
 
 📥 Download Aplikasi
 
-"Klik di sini untuk Download SPADA UNTIRTA" (https://github.com/FikriYustiawann/SpadaAndroid/releases/download/v1.0.0/SPADAUntircoy-APK.zip)
+"⬇️ Klik di sini untuk Download SPADA UNTIRTA" (https://github.com/FikriYustiawann/SpadaAndroid/releases/download/v1.0.0/SPADAUntircoy-APK.zip)
 
 📱 Cara Instalasi
 
-1. Klik link download di atas.
-2. Tunggu hingga file ZIP selesai diunduh.
-3. Buka file ZIP, lalu ekstrak isinya.
-4. Cari file APK di dalam folder hasil ekstraksi.
-5. Buka file APK untuk memulai instalasi.
-6. Jika Android meminta izin instalasi dari sumber tersebut, buka pengaturan yang ditampilkan dan izinkan instalasi.
-7. Setelah selesai, buka aplikasi SPADA UNTIRTA.
+1. Klik tulisan Download SPADA UNTIRTA di atas.
+2. Tunggu file ZIP selesai diunduh.
+3. Ekstrak file ZIP untuk mendapatkan APK.
+4. Buka file APK dan instal di HP Android.
+5. Jika muncul peringatan Google Play Protect, baca keterangannya terlebih dahulu sebelum melanjutkan.
 
 🛡️ Keamanan Aplikasi
 
