@@ -33,15 +33,28 @@ class MainActivity : Activity() {
     // Lebar halaman "desktop" (ubah angka 1024 kalau mau lebih lebar/sempit)
     private val desktopViewportJs = """
         (function() {
-            if (!document.head) return;
-            var m = document.querySelector('meta[name=viewport]');
-            if (m) {
-                m.setAttribute('content', 'width=1024');
-            } else {
-                m = document.createElement('meta');
-                m.name = 'viewport';
-                m.content = 'width=1024';
-                document.head.appendChild(m);
+            function force() {
+                var head = document.head;
+                if (!head) return;
+                var m = document.querySelector('meta[name=viewport]');
+                if (!m) {
+                    m = document.createElement('meta');
+                    m.name = 'viewport';
+                    head.appendChild(m);
+                }
+                if (m.getAttribute('content') !== 'width=1024') {
+                    m.setAttribute('content', 'width=1024');
+                }
+            }
+            force();
+            if (!window.__desktopObs && document.head) {
+                window.__desktopObs = new MutationObserver(force);
+                window.__desktopObs.observe(document.head, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['content']
+                });
             }
         })();
     """.trimIndent()
@@ -90,6 +103,7 @@ class MainActivity : Activity() {
             loadsImagesAutomatically = true
             useWideViewPort = true
             loadWithOverviewMode = true
+            textZoom = 100
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
 
             // Tampilan desktop seperti Chrome "Situs desktop"
@@ -169,6 +183,11 @@ class MainActivity : Activity() {
             // Paksa tampilan desktop setiap halaman dimuat
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
+                view?.evaluateJavascript(desktopViewportJs, null)
+            }
+
+            override fun onPageCommitVisible(view: WebView?, url: String?) {
+                super.onPageCommitVisible(view, url)
                 view?.evaluateJavascript(desktopViewportJs, null)
             }
 
