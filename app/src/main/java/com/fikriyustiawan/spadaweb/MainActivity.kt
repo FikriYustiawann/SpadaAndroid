@@ -74,7 +74,20 @@ class MainActivity : Activity() {
             useWideViewPort = true
             loadWithOverviewMode = true
             mixedContentMode = WebSettings.MIXED_CONTENT_NEVER_ALLOW
+
+            // Tampilan desktop seperti Chrome "Situs desktop"
+            userAgentString =
+                "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 " +
+                "(KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36"
+
+            // Boleh cubit untuk zoom, tanpa tombol +/- bawaan
+            setSupportZoom(true)
+            builtInZoomControls = true
+            displayZoomControls = false
         }
+
+        // Hilangkan efek tarik/mantul di ujung halaman
+        webView.overScrollMode = View.OVER_SCROLL_NEVER
 
         webView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView?, newProgress: Int) {
