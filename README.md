@@ -1,14 +1,10 @@
-# SPADA UNTIRTA Android
+## SPADA UNTIRTA Android
 
 Aplikasi Android berbasis WebView untuk mengakses website [SPADA UNTIRTA](https://spada.untirta.ac.id/?redirect=0) langsung dari HP Android.
 
 ## Download Aplikasi
 
-Unduh versi terbaru lewat tombol di atas, atau langsung dari halaman rilis:
-
-[**Klik di sini untuk Download SPADA UNTIRTA**](https://github.com/FikriYustiawann/SpadaAndroid/releases/download/v1.0.0/SPADAUntircoy-APK.zip)
-
-Semua versi tersedia di halaman [Releases](https://github.com/FikriYustiawann/SpadaAndroid/releases).
+Unduh versi terbaru lewat tombol di atas, atau langsung dari halaman rilis: [**Klik di sini untuk Download SPADA UNTIRTA**](https://github.com/FikriYustiawann/SpadaAndroid/releases/download/v1.0.0/SPADAUntircoy-APK.zip)
 
 ## Cara Instalasi
 
@@ -27,7 +23,7 @@ Semua versi tersedia di halaman [Releases](https://github.com/FikriYustiawann/Sp
 - Aplikasi dirancang sebagai WebView untuk membuka website SPADA UNTIRTA. **Login dilakukan melalui website SPADA UNTIRTA**, dan aplikasi tidak menyimpan atau membaca password.
 - Pastikan file APK diunduh dari **halaman rilis GitHub repositori ini**, dan periksa peringatannya sebelum melanjutkan instalasi.
 
-## Ctatan
+## Catatan
 
 - Koneksi internet diperlukan untuk menggunakan aplikasi.
 - Website SPADA UNTIRTA harus tersedia agar dapat diakses melalui aplikasi.
