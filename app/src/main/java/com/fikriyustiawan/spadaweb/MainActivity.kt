@@ -2,6 +2,7 @@ package com.fikriyustiawan.spadaweb
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -28,6 +29,22 @@ class MainActivity : Activity() {
 
     private val spadaUrl = "https://spada.untirta.ac.id/?redirect=0"
     private val fileRequestCode = 1001
+
+    // Lebar halaman "desktop" (ubah angka 1024 kalau mau lebih lebar/sempit)
+    private val desktopViewportJs = """
+        (function() {
+            if (!document.head) return;
+            var m = document.querySelector('meta[name=viewport]');
+            if (m) {
+                m.setAttribute('content', 'width=1024');
+            } else {
+                m = document.createElement('meta');
+                m.name = 'viewport';
+                m.content = 'width=1024';
+                document.head.appendChild(m);
+            }
+        })();
+    """.trimIndent()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -140,6 +157,17 @@ class MainActivity : Activity() {
                     // abaikan jika tidak ada aplikasi yang bisa membuka
                 }
                 return true
+            }
+
+            // Paksa tampilan desktop setiap halaman dimuat
+            override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
+                super.onPageStarted(view, url, favicon)
+                view?.evaluateJavascript(desktopViewportJs, null)
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                super.onPageFinished(view, url)
+                view?.evaluateJavascript(desktopViewportJs, null)
             }
 
             override fun onReceivedError(
