@@ -4,7 +4,7 @@ Aplikasi Android berbasis WebView untuk memudahkan akses website "SPADA UNTIRTA"
 
 📥 Download Aplikasi
 
-"Klik di sini untuk Download SPADA UNTIRTA" (https://github.com/FikriYustiawann/SpadaAndroid/releases/latest/download/SPADAUntircoy-APK.2.zip)
+"Klik di sini untuk Download SPADA UNTIRTA" (https://github.com/FikriYustiawann/SpadaAndroid/releases/download/v1.0.0/SPADAUntircoy-APK.zip)
 
 📱 Cara Instalasi
 
