@@ -1,4 +1,3 @@
-
 name: Build SPADA APK
 
 on:
@@ -28,16 +27,25 @@ jobs:
         with:
           gradle-version: '8.9'
 
-      - name: Generate Gradle Wrapper
-        run: gradle wrapper --gradle-version 8.9
+      - name: Create signing key
+        run: |
+          PASS=$(openssl rand -hex 16)
+          echo "::add-mask::$PASS"
+          keytool -genkeypair -keystore "$GITHUB_WORKSPACE/release.jks" \
+            -alias spada -keyalg RSA -keysize 2048 -validity 10000 \
+            -storepass "$PASS" -keypass "$PASS" \
+            -dname "CN=SPADA Web, OU=Personal, O=Fikri, C=ID"
+          echo "KEYSTORE_PATH=$GITHUB_WORKSPACE/release.jks" >> $GITHUB_ENV
+          echo "KEYSTORE_PASSWORD=$PASS" >> $GITHUB_ENV
+          echo "KEY_ALIAS=spada" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=$PASS" >> $GITHUB_ENV
 
-      - name: Build SPADA APK
-        run: ./gradlew assembleDebug
+      - name: Build release APK
+        run: gradle assembleRelease --no-daemon
 
-      - name: Upload SPADA APK
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: SPADA-APK
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
-          
