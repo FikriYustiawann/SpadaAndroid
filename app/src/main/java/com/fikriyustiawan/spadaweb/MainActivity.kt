@@ -147,9 +147,16 @@ class MainActivity : Activity() {
             ): Boolean {
                 val url = request?.url ?: return false
                 val host = url.host ?: return false
+
                 if (host == "untirta.ac.id" || host.endsWith(".untirta.ac.id")) {
+                    // PERBAIKAN: kalau alamatnya http://, ubah jadi https://
+                    if (url.scheme == "http") {
+                        view?.loadUrl(url.buildUpon().scheme("https").build().toString())
+                        return true
+                    }
                     return false
                 }
+
                 // Link ke situs lain dibuka di browser
                 try {
                     startActivity(Intent(Intent.ACTION_VIEW, url))
