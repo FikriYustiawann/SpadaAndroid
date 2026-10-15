@@ -1,3 +1,4 @@
+
 package id.ac.untirta.siakangspada
 
 import android.app.Activity
@@ -7,6 +8,7 @@ import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
+import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.FrameLayout
@@ -18,110 +20,120 @@ class MainActivity : Activity() {
     private lateinit var webView: WebView
     private lateinit var progress: ProgressBar
 
+    private val spadaUrl =
+        "https://spada.untirta.ac.id/?redirect=0"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val layout = FrameLayout(this)
+        try {
+            val layout = FrameLayout(this)
 
-        webView = WebView(this)
-        progress = ProgressBar(
-            this,
-            null,
-            android.R.attr.progressBarStyleHorizontal
-        )
-
-        progress.max = 100
-
-        layout.addView(
-            webView,
-            FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                FrameLayout.LayoutParams.MATCH_PARENT
+            webView = WebView(this)
+            progress = ProgressBar(
+                this,
+                null,
+                android.R.attr.progressBarStyleHorizontal
             )
-        )
 
-        layout.addView(
-            progress,
-            FrameLayout.LayoutParams(
-                FrameLayout.LayoutParams.MATCH_PARENT,
-                8
+            progress.max = 100
+
+            layout.addView(
+                webView,
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    FrameLayout.LayoutParams.MATCH_PARENT
+                )
             )
-        )
 
-        setContentView(layout)
+            layout.addView(
+                progress,
+                FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT,
+                    8
+                )
+            )
 
-        CookieManager.getInstance().setAcceptCookie(true)
-        CookieManager.getInstance()
-            .setAcceptThirdPartyCookies(webView, true)
+            setContentView(layout)
 
-        webView.settings.apply {
-            javaScriptEnabled = true
-            domStorageEnabled = true
-            loadsImagesAutomatically = true
-            javaScriptCanOpenWindowsAutomatically = true
-            setSupportMultipleWindows(false)
-            useWideViewPort = true
-            loadWithOverviewMode = true
-        }
+            CookieManager.getInstance().setAcceptCookie(true)
+            CookieManager.getInstance()
+                .setAcceptThirdPartyCookies(webView, true)
 
-        webView.webChromeClient = object : WebChromeClient() {
-            override fun onProgressChanged(
-                view: WebView?,
-                newProgress: Int
-            ) {
-                progress.progress = newProgress
-                progress.visibility =
-                    if (newProgress >= 100) View.GONE
-                    else View.VISIBLE
-            }
-        }
-
-        webView.webViewClient = object : WebViewClient() {
-
-            override fun shouldOverrideUrlLoading(
-                view: WebView?,
-                request: WebResourceRequest?
-            ): Boolean {
-                val host = request?.url?.host ?: return false
-
-                // Buka halaman UNTIRTA di dalam aplikasi.
-                return !(host == "untirta.ac.id" ||
-                    host.endsWith(".untirta.ac.id"))
+            webView.settings.apply {
+                javaScriptEnabled = true
+                domStorageEnabled = true
+                databaseEnabled = true
+                loadsImagesAutomatically = true
+                javaScriptCanOpenWindowsAutomatically = true
+                setSupportMultipleWindows(false)
+                useWideViewPort = true
+                loadWithOverviewMode = true
+                mixedContentMode =
+                    WebSettings.MIXED_CONTENT_NEVER_ALLOW
             }
 
-            override fun onReceivedError(
-                view: WebView?,
-                request: WebResourceRequest?,
-                error: WebResourceError?
-            ) {
-                super.onReceivedError(view, request, error)
-
-                if (request?.isForMainFrame == true) {
-                    Toast.makeText(
-                        this@MainActivity,
-                        "Halaman gagal dimuat. Periksa koneksi internet.",
-                        Toast.LENGTH_LONG
-                    ).show()
+            webView.webChromeClient = object : WebChromeClient() {
+                override fun onProgressChanged(
+                    view: WebView?,
+                    newProgress: Int
+                ) {
+                    progress.progress = newProgress
+                    progress.visibility =
+                        if (newProgress >= 100) View.GONE
+                        else View.VISIBLE
                 }
             }
-        }
 
-        if (savedInstanceState != null) {
-            val restored = webView.restoreState(savedInstanceState)
-            if (restored == null) {
-                webView.loadUrl(
-                    "https://spada.untirta.ac.id/?redirect=0"
-                )
+            webView.webViewClient = object : WebViewClient() {
+
+                override fun shouldOverrideUrlLoading(
+                    view: WebView?,
+                    request: WebResourceRequest?
+                ): Boolean {
+                    val host = request?.url?.host ?: return false
+
+                    return !(host == "untirta.ac.id" ||
+                        host.endsWith(".untirta.ac.id"))
+                }
+
+                override fun onReceivedError(
+                    view: WebView?,
+                    request: WebResourceRequest?,
+                    error: WebResourceError?
+                ) {
+                    super.onReceivedError(view, request, error)
+
+                    if (request?.isForMainFrame == true) {
+                        Toast.makeText(
+                            this@MainActivity,
+                            "Halaman gagal dimuat. Periksa internet atau coba lagi.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
             }
-        } else {
-            webView.loadUrl(
-                "https://spada.untirta.ac.id/?redirect=0"
-            )
+
+            if (savedInstanceState == null ||
+                webView.restoreState(savedInstanceState) == null
+            ) {
+                webView.loadUrl(spadaUrl)
+            }
+
+        } catch (e: Exception) {
+            Toast.makeText(
+                this,
+                "Aplikasi gagal dibuka: ${e.message}",
+                Toast.LENGTH_LONG
+            ).show()
+            finish()
         }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        webView.saveState(outState)
+        if (::webView.isInitialized) {
+            webView.saveState(outState)
+        }
         super.onSaveInstanceState(outState)
     }
 
