@@ -2,19 +2,19 @@ package id.ac.untirta.siakangspada
 
 import android.app.Activity
 import android.os.Bundle
+import android.view.View
+import android.webkit.CookieManager
 import android.webkit.WebChromeClient
+import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import android.webkit.WebSettings
-import android.view.View
 import android.widget.FrameLayout
 import android.widget.ProgressBar
-import android.graphics.Color
-import android.content.Intent
-import android.net.Uri
+import android.widget.Toast
 
 class MainActivity : Activity() {
+
     private lateinit var webView: WebView
     private lateinit var progress: ProgressBar
 
@@ -22,52 +22,101 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
 
         val layout = FrameLayout(this)
-        webView = WebView(this)
-        progress = ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal)
-        progress.max = 100
-        progress.setBackgroundColor(Color.TRANSPARENT)
 
-        layout.addView(webView, FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
-            FrameLayout.LayoutParams.MATCH_PARENT
-        ))
-        val progressParams = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT, 8
+        webView = WebView(this)
+        progress = ProgressBar(
+            this,
+            null,
+            android.R.attr.progressBarStyleHorizontal
         )
-        layout.addView(progress, progressParams)
+
+        progress.max = 100
+
+        layout.addView(
+            webView,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                FrameLayout.LayoutParams.MATCH_PARENT
+            )
+        )
+
+        layout.addView(
+            progress,
+            FrameLayout.LayoutParams(
+                FrameLayout.LayoutParams.MATCH_PARENT,
+                8
+            )
+        )
+
         setContentView(layout)
 
-        webView.settings.javaScriptEnabled = true
-        webView.settings.domStorageEnabled = true
-        webView.settings.loadsImagesAutomatically = true
-        webView.settings.javaScriptCanOpenWindowsAutomatically = true
-        webView.settings.setSupportMultipleWindows(true)
-        webView.settings.cacheMode = WebSettings.LOAD_DEFAULT
+        CookieManager.getInstance().setAcceptCookie(true)
+        CookieManager.getInstance()
+            .setAcceptThirdPartyCookies(webView, true)
+
+        webView.settings.apply {
+            javaScriptEnabled = true
+            domStorageEnabled = true
+            loadsImagesAutomatically = true
+            javaScriptCanOpenWindowsAutomatically = true
+            setSupportMultipleWindows(false)
+            useWideViewPort = true
+            loadWithOverviewMode = true
+        }
+
         webView.webChromeClient = object : WebChromeClient() {
-            override fun onProgressChanged(view: WebView?, newProgress: Int) {
+            override fun onProgressChanged(
+                view: WebView?,
+                newProgress: Int
+            ) {
                 progress.progress = newProgress
-                progress.visibility = if (newProgress >= 100) View.GONE else View.VISIBLE
+                progress.visibility =
+                    if (newProgress >= 100) View.GONE
+                    else View.VISIBLE
             }
         }
+
         webView.webViewClient = object : WebViewClient() {
-            override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                val uri = request?.url ?: return false
-                val host = uri.host ?: return false
-                // Keep Untirta/SPADA pages inside the app. Open unrelated external sites in browser.
-                return if (host == "spada.untirta.ac.id" || host.endsWith(".untirta.ac.id")) {
-                    false
-                } else {
-                    try {
-                        startActivity(Intent(Intent.ACTION_VIEW, uri))
-                    } catch (_: Exception) { }
-                    true
+
+            override fun shouldOverrideUrlLoading(
+                view: WebView?,
+                request: WebResourceRequest?
+            ): Boolean {
+                val host = request?.url?.host ?: return false
+
+                // Buka halaman UNTIRTA di dalam aplikasi.
+                return !(host == "untirta.ac.id" ||
+                    host.endsWith(".untirta.ac.id"))
+            }
+
+            override fun onReceivedError(
+                view: WebView?,
+                request: WebResourceRequest?,
+                error: WebResourceError?
+            ) {
+                super.onReceivedError(view, request, error)
+
+                if (request?.isForMainFrame == true) {
+                    Toast.makeText(
+                        this@MainActivity,
+                        "Halaman gagal dimuat. Periksa koneksi internet.",
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
         }
-        if (savedInstanceState == null) {
-            webView.loadUrl("https://spada.untirta.ac.id/?redirect=0")
+
+        if (savedInstanceState != null) {
+            val restored = webView.restoreState(savedInstanceState)
+            if (restored == null) {
+                webView.loadUrl(
+                    "https://spada.untirta.ac.id/?redirect=0"
+                )
+            }
         } else {
-            webView.restoreState(savedInstanceState)
+            webView.loadUrl(
+                "https://spada.untirta.ac.id/?redirect=0"
+            )
         }
     }
 
@@ -76,6 +125,7 @@ class MainActivity : Activity() {
         super.onSaveInstanceState(outState)
     }
 
+    @Deprecated("Deprecated in Android")
     override fun onBackPressed() {
         if (::webView.isInitialized && webView.canGoBack()) {
             webView.goBack()
@@ -85,7 +135,10 @@ class MainActivity : Activity() {
     }
 
     override fun onDestroy() {
-        if (::webView.isInitialized) webView.destroy()
+        if (::webView.isInitialized) {
+            webView.stopLoading()
+            webView.destroy()
+        }
         super.onDestroy()
     }
 }
